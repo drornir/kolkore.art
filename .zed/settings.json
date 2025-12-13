@@ -1,7 +1,6 @@
 {
-  "file_scan_exclusions": [
-    "**/routeTree.gen.ts"
-  ],
+  // "file_scan_exclusions": ["**/routeTree.gen.ts"],
+  "language_servers": ["typescript-language-server", "!vtsls", "..."],
   "languages": {
     "JavaScript": {
       "formatter": {
@@ -48,6 +47,7 @@
       }
     },
     "CSS": {
+      "language_servers": ["biome", "tailwindcss-language-server"],
       "formatter": {
         "language_server": {
           "name": "biome"
@@ -56,13 +56,20 @@
     }
   },
   "lsp": {
-      "tailwindcss-language-server": {
-        "settings": {
-          "classFunctions": ["cva", "cx", "cn"],
-          "experimental": {
-            "classRegex": ["[cls|className]\\s\\:\\=\\s\"([^\"]*)"]
-          }
+    "deno": {
+      "settings": {
+        "deno": {
+          "enable": false
+        }
+      }
+    },
+    "tailwindcss-language-server": {
+      "settings": {
+        "classFunctions": ["cva", "cx", "cn"],
+        "experimental": {
+          "classRegex": ["[cls|className]\\s\\:\\=\\s\"([^\"]*)"]
         }
       }
     }
+  }
 }
