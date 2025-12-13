@@ -1,0 +1,23 @@
+{
+  "projectName": "kolkore.art",
+  "mode": "file-router",
+  "typescript": true,
+  "tailwind": true,
+  "packageManager": "pnpm",
+  "addOnOptions": {},
+  "git": true,
+  "version": 1,
+  "framework": "react-cra",
+  "chosenAddOns": [
+    "biome",
+    "nitro",
+    "start",
+    "tanstack-query",
+    "table",
+    "shadcn",
+    "form",
+    "convex",
+    "compiler",
+    "store"
+  ]
+}
