@@ -1,118 +1,336 @@
 import { createFileRoute } from '@tanstack/react-router'
 import {
-  Route as RouteIcon,
-  Server,
-  Shield,
-  Sparkles,
-  Waves,
-  Zap,
+  Building2,
+  CalendarDays,
+  ChevronLeft,
+  Clock,
+  MapPin,
+  Search,
+  Tag,
 } from 'lucide-react'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Field, FieldLabel } from '@/components/ui/field'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from '@/components/ui/input-group'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
 
-export const Route = createFileRoute('/')({ component: App })
+export const Route = createFileRoute('/')({ component: OpenCallsPage })
 
-function App() {
-  const features = [
+interface OpenCall {
+  id: string
+  type: string
+  institution: string
+  link: string
+  deadline: string
+  requirements: string[]
+  location: string
+  title: string
+  description?: string
+}
+
+const MOCK_DATA: OpenCall[] = [
+  {
+    id: '1',
+    title: 'שהות אמן בגלריה העירונית',
+    type: 'שהות אמן (Residency)',
+    institution: 'עיריית תל אביב-יפו',
+    link: 'https://example.com/call-1',
+    deadline: '2024-03-15',
+    location: 'תל אביב',
+    description: 'הזדמנות ייחודית לאמנים ליצור בחלל עבודה משותף בלב העיר.',
+    requirements: [
+      'אמנים פעילים בעלי ניסיון של 3 שנים לפחות',
+      'תיק עבודות מעודכן',
+      'הצעה לפרויקט המערב את הקהילה המקומית',
+    ],
+  },
+  {
+    id: '2',
+    title: 'מענק יצירה לאמנות פלסטית',
+    type: 'מענק',
+    institution: 'קרן התרבות לישראל',
+    link: 'https://example.com/call-2',
+    deadline: '2024-04-01',
+    location: 'ארצי',
+    description: 'תמיכה כספית לאמנים בתחילת דרכם למימוש פרויקט אישי.',
+    requirements: [
+      'אזרחי ישראל בלבד',
+      'גילאי 25-45',
+      'פירוט תקציבי של הפרויקט המוצע',
+    ],
+  },
+  {
+    id: '3',
+    title: 'תערוכה קבוצתית: "מרחבים משותפים"',
+    type: 'קול קורא לתערוכה',
+    institution: 'מוזיאון חיפה לאמנות',
+    link: 'https://example.com/call-3',
+    deadline: '2024-02-28',
+    location: 'חיפה',
+    description: 'הזמנה להשתתף בתערוכה הבוחנת את הגבולות בין האישי לציבורי.',
+    requirements: [
+      'עבודות במדיה מעורבת',
+      'התייחסות לנושא התערוכה',
+      'הגשת עד 5 דימויים של עבודות קיימות',
+    ],
+  },
+  {
+    id: '4',
+    title: 'פסטיבל הוידאו ארט הבינלאומי',
+    type: 'פסטיבל',
+    institution: 'המרכז לאמנות עכשווית',
+    link: 'https://example.com/call-4',
+    deadline: '2024-05-10',
+    location: 'ירושלים',
+    description: 'פסטיבל המציג עבודות וידאו חדשניות מהארץ ומהעולם.',
+    requirements: [
+      'עבודות וידאו שנוצרו בשנתיים האחרונות',
+      'אורך מקסימלי: 15 דקות',
+      'זכויות יוצרים מוסדרות',
+    ],
+  },
+]
+
+function OpenCallsPage() {
+  const typesForSelect: Parameters<typeof Select>[0]['items'] = [
     {
-      icon: <Zap className="w-12 h-12 text-cyan-400" />,
-      title: 'Powerful Server Functions',
-      description:
-        'Write server-side code that seamlessly integrates with your client components. Type-safe, secure, and simple.',
+      label: 'כל הסוגים',
+      value: null,
     },
     {
-      icon: <Server className="w-12 h-12 text-cyan-400" />,
-      title: 'Flexible Server Side Rendering',
-      description:
-        'Full-document SSR, streaming, and progressive enhancement out of the box. Control exactly what renders where.',
+      label: 'שהות אמן (Residency)',
+      value: 'residency',
     },
     {
-      icon: <RouteIcon className="w-12 h-12 text-cyan-400" />,
-      title: 'API Routes',
-      description:
-        'Build type-safe API endpoints alongside your application. No separate backend needed.',
+      label: 'מענק',
+      value: 'grant',
     },
     {
-      icon: <Shield className="w-12 h-12 text-cyan-400" />,
-      title: 'Strongly Typed Everything',
-      description:
-        'End-to-end type safety from server to client. Catch errors before they reach production.',
+      label: 'קול קורא לתערוכה',
+      value: 'exhibition',
     },
     {
-      icon: <Waves className="w-12 h-12 text-cyan-400" />,
-      title: 'Full Streaming Support',
-      description:
-        'Stream data from server to client progressively. Perfect for AI applications and real-time updates.',
+      label: 'פסטיבל',
+      value: 'festival',
+    },
+  ]
+
+  const locationsForSelect: Parameters<typeof Select>[0]['items'] = [
+    {
+      label: 'כל הארץ',
+      value: null,
     },
     {
-      icon: <Sparkles className="w-12 h-12 text-cyan-400" />,
-      title: 'Next Generation Ready',
-      description:
-        'Built from the ground up for modern web applications. Deploy anywhere JavaScript runs.',
+      label: 'תל אביב',
+      value: 'tel-aviv',
+    },
+    {
+      label: 'ירושלים',
+      value: 'jerusalem',
+    },
+    {
+      label: 'חיפה',
+      value: 'haifa',
+    },
+    {
+      label: 'ארצי',
+      value: 'national',
     },
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900">
-      <section className="relative py-20 px-6 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10"></div>
-        <div className="relative max-w-5xl mx-auto">
-          <div className="flex items-center justify-center gap-6 mb-6">
-            <img
-              src="/tanstack-circle-logo.png"
-              alt="TanStack Logo"
-              className="w-24 h-24 md:w-32 md:h-32"
-            />
-            <h1 className="text-6xl md:text-7xl font-black text-white [letter-spacing:-0.08em]">
-              <span className="text-gray-300">TANSTACK</span>{' '}
-              <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                START
-              </span>
-            </h1>
-          </div>
-          <p className="text-2xl md:text-3xl text-gray-300 mb-4 font-light">
-            The framework for next generation AI applications
+    <div
+      className="min-h-screen bg-background pb-12 font-sans text-foreground"
+      dir="rtl"
+    >
+      {/* Hero Section */}
+      <section className="bg-card border-b py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight mb-4">
+            לוח הזדמנויות לאמנים
+          </h1>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+            מרכז המידע העדכני ביותר לקולות קוראים, מענקים, מלגות ותערוכות לאמנים
+            בישראל.
           </p>
-          <p className="text-lg text-gray-400 max-w-3xl mx-auto mb-8">
-            Full-stack framework powered by TanStack Router for React and Solid.
-            Build modern applications with server functions, streaming, and type
-            safety.
-          </p>
-          <div className="flex flex-col items-center gap-4">
-            <a
-              href="https://tanstack.com/start"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-8 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-cyan-500/50"
-            >
-              Documentation
-            </a>
-            <p className="text-gray-400 text-sm mt-2">
-              Begin your TanStack Start journey by editing{' '}
-              <code className="px-2 py-1 bg-slate-700 rounded text-cyan-400">
-                /src/routes/index.tsx
-              </code>
-            </p>
-          </div>
         </div>
       </section>
 
-      <section className="py-16 px-6 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-cyan-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10"
-            >
-              <div className="mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold text-white mb-3">
-                {feature.title}
-              </h3>
-              <p className="text-gray-400 leading-relaxed">
-                {feature.description}
-              </p>
+      {/* Filters Section */}
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6">
+        <Card className=" border-none ring-1 ring-border">
+          <CardContent className="p-4 md:p-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+              {/* Search */}
+              <Field className="md:col-span-2">
+                <FieldLabel htmlFor="search">חיפוש חופשי</FieldLabel>
+                <InputGroup>
+                  <InputGroupAddon className="ps-3 pointer-events-none">
+                    <Search className="h-4 w-4 text-muted-foreground" />
+                  </InputGroupAddon>
+                  <InputGroupInput
+                    id="search"
+                    placeholder="חיפוש לפי מילת מפתח..."
+                  />
+                </InputGroup>
+              </Field>
+
+              {/* Type Filter */}
+              <Field>
+                <FieldLabel>סוג הזדמנות</FieldLabel>
+                <Select items={typesForSelect}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {typesForSelect.map(({ label, value }) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+
+              {/* Location Filter */}
+              <Field>
+                <FieldLabel>מיקום</FieldLabel>
+                <Select items={locationsForSelect}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {locationsForSelect.map(({ label, value }) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
             </div>
+
+            <Separator className="my-6" />
+
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="secondary" className="">
+                הכל
+              </Badge>
+              <Badge variant="secondary" className="">
+                נסגר השבוע
+              </Badge>
+              <Badge variant="secondary" className="">
+                ללא עלות הגשה
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* Main Content List */}
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+        <div className="space-y-6">
+          {MOCK_DATA.map((item) => (
+            <Card
+              key={item.id}
+              className="group overflow-hidden border-none ring-1 ring-border"
+            >
+              <CardHeader className="p-6 md:p-8 pb-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge variant="secondary">
+                    <Tag className="w-3 h-3 me-1" />
+                    {item.type}
+                  </Badge>
+                </div>
+                <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors">
+                  {item.title}
+                </CardTitle>
+                <CardDescription className="text-base text-muted-foreground mt-2 line-clamp-2">
+                  {item.description}
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="p-6 md:p-8 pt-4">
+                <div className="flex flex-wrap gap-y-2 gap-x-6 text-sm text-muted-foreground mb-6">
+                  <div className="flex items-center">
+                    <Building2 className="w-4 h-4 me-1.5 opacity-70" />
+                    {item.institution}
+                  </div>
+                  <div className="flex items-center">
+                    <MapPin className="w-4 h-4 me-1.5 opacity-70" />
+                    {item.location}
+                  </div>
+                  <div className="flex items-center text-destructive font-medium bg-destructive/10 px-2 py-0.5 rounded-sm">
+                    <Clock className="w-4 h-4 me-1.5" />
+                    דדליין: {item.deadline}
+                  </div>
+                </div>
+
+                <Accordion className="w-full">
+                  <AccordionItem value="requirements" className="border-none">
+                    <AccordionTrigger className="bg-muted/30 px-4 py-2 rounded-lg hover:no-underline hover:bg-muted/50 transition-colors">
+                      <span className="font-semibold text-foreground">
+                        דרישות עיקריות
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="pt-4 px-4">
+                      <ul className="list-disc list-inside space-y-1 text-muted-foreground marker:text-muted-foreground/50">
+                        {item.requirements.map((req, idx) => (
+                          // biome-ignore lint/suspicious/noArrayIndexKey: static
+                          <li key={idx}>{req}</li>
+                        ))}
+                      </ul>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </CardContent>
+
+              <CardFooter className="p-4 bg-muted/10 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div className="flex items-center text-xs text-muted-foreground">
+                  <CalendarDays className="w-4 h-4 me-1.5 opacity-50" />
+                  <span>פורסם לפני יומיים</span>
+                </div>
+                <Button className="w-full sm:w-auto">
+                  <a href={item.link} target="_blank" rel="noopener noreferrer">
+                    פרטים והגשה
+                    <ChevronLeft className="w-4 h-4 ms-1.5 inline" />
+                  </a>
+                </Button>
+              </CardFooter>
+            </Card>
           ))}
         </div>
-      </section>
+      </main>
     </div>
   )
 }
