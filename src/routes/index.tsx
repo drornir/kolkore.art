@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import { zodValidator } from '@tanstack/zod-adapter'
 import {
   Building2,
@@ -51,81 +51,6 @@ export const Route = createFileRoute('/')({
   },
   component: OpenCallsPage,
 })
-
-interface OpenCall {
-  id: string
-  type: string
-  institution: string
-  link: string
-  deadline: string
-  requirements: string[]
-  location: string
-  title: string
-  description?: string
-}
-
-const MOCK_DATA: OpenCall[] = [
-  {
-    id: '1',
-    title: 'שהות אמן בגלריה העירונית',
-    type: 'שהות אמן (Residency)',
-    institution: 'עיריית תל אביב-יפו',
-    link: 'https://example.com/call-1',
-    deadline: '2024-03-15',
-    location: 'תל אביב',
-    description: 'הזדמנות ייחודית לאמנים ליצור בחלל עבודה משותף בלב העיר.',
-    requirements: [
-      'אמנים פעילים בעלי ניסיון של 3 שנים לפחות',
-      'תיק עבודות מעודכן',
-      'הצעה לפרויקט המערב את הקהילה המקומית',
-    ],
-  },
-  {
-    id: '2',
-    title: 'מענק יצירה לאמנות פלסטית',
-    type: 'מענק',
-    institution: 'קרן התרבות לישראל',
-    link: 'https://example.com/call-2',
-    deadline: '2024-04-01',
-    location: 'ארצי',
-    description: 'תמיכה כספית לאמנים בתחילת דרכם למימוש פרויקט אישי.',
-    requirements: [
-      'אזרחי ישראל בלבד',
-      'גילאי 25-45',
-      'פירוט תקציבי של הפרויקט המוצע',
-    ],
-  },
-  {
-    id: '3',
-    title: 'תערוכה קבוצתית: "מרחבים משותפים"',
-    type: 'קול קורא לתערוכה',
-    institution: 'מוזיאון חיפה לאמנות',
-    link: 'https://example.com/call-3',
-    deadline: '2024-02-28',
-    location: 'חיפה',
-    description: 'הזמנה להשתתף בתערוכה הבוחנת את הגבולות בין האישי לציבורי.',
-    requirements: [
-      'עבודות במדיה מעורבת',
-      'התייחסות לנושא התערוכה',
-      'הגשת עד 5 דימויים של עבודות קיימות',
-    ],
-  },
-  {
-    id: '4',
-    title: 'פסטיבל הוידאו ארט הבינלאומי',
-    type: 'פסטיבל',
-    institution: 'המרכז לאמנות עכשווית',
-    link: 'https://example.com/call-4',
-    deadline: '2024-05-10',
-    location: 'ירושלים',
-    description: 'פסטיבל המציג עבודות וידאו חדשניות מהארץ ומהעולם.',
-    requirements: [
-      'עבודות וידאו שנוצרו בשנתיים האחרונות',
-      'אורך מקסימלי: 15 דקות',
-      'זכויות יוצרים מוסדרות',
-    ],
-  },
-]
 
 function OpenCallsPage() {
   // const router = useRouter()
@@ -288,44 +213,55 @@ function OpenCallsPage() {
                 <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors">
                   {item.title}
                 </CardTitle>
-                <CardDescription className="text-base text-muted-foreground mt-2 line-clamp-2">
-                  {item.description}
-                </CardDescription>
+                {item.description && (
+                  <CardDescription className="text-base text-muted-foreground mt-2 line-clamp-2">
+                    {item.description}
+                  </CardDescription>
+                )}
               </CardHeader>
 
               <CardContent className="p-6 md:p-8 pt-4">
                 <div className="flex flex-wrap gap-y-2 gap-x-6 text-sm text-muted-foreground mb-6">
-                  <div className="flex items-center">
-                    <Building2 className="w-4 h-4 me-1.5 opacity-70" />
-                    {item.institution}
-                  </div>
-                  <div className="flex items-center">
-                    <MapPin className="w-4 h-4 me-1.5 opacity-70" />
-                    {item.location}
-                  </div>
-                  <div className="flex items-center text-destructive font-medium bg-destructive/10 px-2 py-0.5 rounded-sm">
-                    <Clock className="w-4 h-4 me-1.5" />
-                    דדליין: {item.deadline}
-                  </div>
+                  {item.institution && (
+                    <div className="flex items-center">
+                      <Building2 className="w-4 h-4 me-1.5 opacity-70" />
+                      {item.institution}
+                    </div>
+                  )}
+                  {item.location && (
+                    <div className="flex items-center">
+                      <MapPin className="w-4 h-4 me-1.5 opacity-70" />
+                      {item.location}
+                    </div>
+                  )}
+                  {item.deadline && (
+                    <div className="flex items-center text-destructive font-medium bg-destructive/10 px-2 py-0.5 rounded-sm">
+                      <Clock className="w-4 h-4 me-1.5" />
+                      דדליין:
+                      {item.deadline?.toLocaleDateString()}
+                    </div>
+                  )}
                 </div>
 
-                <Accordion className="w-full">
-                  <AccordionItem value="requirements" className="border-none">
-                    <AccordionTrigger className="bg-muted/30 px-4 py-2 rounded-lg hover:no-underline hover:bg-muted/50 transition-colors">
-                      <span className="font-semibold text-foreground">
-                        דרישות עיקריות
-                      </span>
-                    </AccordionTrigger>
-                    <AccordionContent className="pt-4 px-4">
-                      <ul className="list-disc list-inside space-y-1 text-muted-foreground marker:text-muted-foreground/50">
-                        {item.requirements.map((req, idx) => (
-                          // biome-ignore lint/suspicious/noArrayIndexKey: static
-                          <li key={idx}>{req}</li>
-                        ))}
-                      </ul>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
+                {item.requirements && (
+                  <Accordion className="w-full">
+                    <AccordionItem value="requirements" className="border-none">
+                      <AccordionTrigger className="bg-muted/30 px-4 py-2 rounded-lg hover:no-underline hover:bg-muted/50 transition-colors">
+                        <span className="font-semibold text-foreground">
+                          דרישות עיקריות
+                        </span>
+                      </AccordionTrigger>
+                      <AccordionContent className="pt-4 px-4">
+                        <ul className="list-disc list-inside space-y-1 text-muted-foreground marker:text-muted-foreground/50">
+                          {item.requirements.map((req, idx) => (
+                            // biome-ignore lint/suspicious/noArrayIndexKey: static
+                            <li key={idx}>{req}</li>
+                          ))}
+                        </ul>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                )}
               </CardContent>
 
               <CardFooter className="p-4 bg-muted/10 flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -333,12 +269,18 @@ function OpenCallsPage() {
                   <CalendarDays className="w-4 h-4 me-1.5 opacity-50" />
                   <span>פורסם לפני יומיים</span>
                 </div>
-                <Button className="w-full sm:w-auto">
-                  <a href={item.link} target="_blank" rel="noopener noreferrer">
-                    פרטים והגשה
-                    <ChevronLeft className="w-4 h-4 ms-1.5 inline" />
-                  </a>
-                </Button>
+                {item.link && (
+                  <Button className="w-full sm:w-auto">
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      פרטים והגשה
+                      <ChevronLeft className="w-4 h-4 ms-1.5 inline" />
+                    </a>
+                  </Button>
+                )}
               </CardFooter>
             </Card>
           ))}

@@ -34,11 +34,11 @@ export class QueryRepo {
   query = async (
     {
       filters,
-      order,
+      sort,
       pagination,
     }: {
       filters: CallsFilters
-      order: SortParams
+      sort: SortParams
       pagination: PaginationParams
     },
     { omitArchivedAt = true } = {},
@@ -77,13 +77,13 @@ export class QueryRepo {
       }
     }
 
-    const orderDir = order.order === 'asc' ? asc : desc
+    const orderDir = sort.order === 'asc' ? asc : desc
     const orderBy = (
       {
         createdAt: table.createdAt,
         deadline: table.deadline,
       } as const
-    )[order.by]
+    )[sort.by]
 
     const res = await this.db
       .select()

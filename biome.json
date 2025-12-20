@@ -9,6 +9,8 @@
     "ignoreUnknown": false,
     "includes": [
       "src/**/*",
+      "!src/routes/demo/**/*",
+      "!src/data/demo*",
       ".zed/**/*",
       ".vscode/**/*",
       "**/index.html",
@@ -28,7 +30,13 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "correctness": {
+        "noUnusedImports": {
+          "level": "on",
+          "fix": "safe"
+        }
+      }
     }
   },
   "javascript": {

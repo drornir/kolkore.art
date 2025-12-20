@@ -9,7 +9,7 @@ export const getHomepageCalls = createServerFn()
   .handler(async ({ data, context }) => {
     return await context.callsRepo.query({
       filters: data.filters,
-      order: data.sort,
+      sort: data.sort,
       pagination: data.pagination,
     })
   })
