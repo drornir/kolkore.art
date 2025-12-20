@@ -13,7 +13,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DemoTableRouteImport } from './routes/demo/table'
 import { Route as DemoStoreRouteImport } from './routes/demo/store'
-import { Route as DemoConvexRouteImport } from './routes/demo/convex'
 import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
 import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
 import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
@@ -43,11 +42,6 @@ const DemoTableRoute = DemoTableRouteImport.update({
 const DemoStoreRoute = DemoStoreRouteImport.update({
   id: '/demo/store',
   path: '/demo/store',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoConvexRoute = DemoConvexRouteImport.update({
-  id: '/demo/convex',
-  path: '/demo/convex',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
@@ -103,7 +97,6 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/demo/convex': typeof DemoConvexRoute
   '/demo/store': typeof DemoStoreRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -120,7 +113,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/demo/convex': typeof DemoConvexRoute
   '/demo/store': typeof DemoStoreRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -138,7 +130,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/demo/convex': typeof DemoConvexRoute
   '/demo/store': typeof DemoStoreRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
@@ -157,7 +148,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/demo/convex'
     | '/demo/store'
     | '/demo/table'
     | '/demo/tanstack-query'
@@ -174,7 +164,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/demo/convex'
     | '/demo/store'
     | '/demo/table'
     | '/demo/tanstack-query'
@@ -191,7 +180,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/demo/convex'
     | '/demo/store'
     | '/demo/table'
     | '/demo/tanstack-query'
@@ -209,7 +197,6 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DemoConvexRoute: typeof DemoConvexRoute
   DemoStoreRoute: typeof DemoStoreRoute
   DemoTableRoute: typeof DemoTableRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
@@ -253,13 +240,6 @@ declare module '@tanstack/react-router' {
       path: '/demo/store'
       fullPath: '/demo/store'
       preLoaderRoute: typeof DemoStoreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/convex': {
-      id: '/demo/convex'
-      path: '/demo/convex'
-      fullPath: '/demo/convex'
-      preLoaderRoute: typeof DemoConvexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo/start/server-funcs': {
@@ -337,7 +317,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DemoConvexRoute: DemoConvexRoute,
   DemoStoreRoute: DemoStoreRoute,
   DemoTableRoute: DemoTableRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,

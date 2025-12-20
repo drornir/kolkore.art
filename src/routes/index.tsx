@@ -1,4 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { zodValidator } from '@tanstack/zod-adapter'
 import {
   Building2,
   CalendarDays,
@@ -39,8 +40,17 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
+import { zodQueryParams } from '@/data/calls'
+import { getHomepageCalls } from '@/server/calls'
 
-export const Route = createFileRoute('/')({ component: OpenCallsPage })
+export const Route = createFileRoute('/')({
+  validateSearch: zodValidator(zodQueryParams),
+  loaderDeps: ({ search }) => search,
+  loader: async ({ deps }) => {
+    return { calls: await getHomepageCalls({ data: deps }) }
+  },
+  component: OpenCallsPage,
+})
 
 interface OpenCall {
   id: string
@@ -118,6 +128,9 @@ const MOCK_DATA: OpenCall[] = [
 ]
 
 function OpenCallsPage() {
+  // const router = useRouter()
+  const { calls } = Route.useLoaderData()
+
   const typesForSelect: Parameters<typeof Select>[0]['items'] = [
     {
       label: 'כל הסוגים',
@@ -260,7 +273,7 @@ function OpenCallsPage() {
       {/* Main Content List */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
         <div className="space-y-6">
-          {MOCK_DATA.map((item) => (
+          {calls.map((item) => (
             <Card
               key={item.id}
               className="group overflow-hidden border-none ring-1 ring-border"
