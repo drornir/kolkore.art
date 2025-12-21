@@ -122,9 +122,10 @@ function OpenCallsPage() {
 
       {/* Filters Section */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6">
-        <Card className=" border-none ring-1 ring-border">
+        <Card className="border-none ring-1 ring-border">
           <CardContent className="p-4 md:p-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <span className="text-red-600">כל החלק הזה עדיין בפיתוח</span>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end opacity-30">
               {/* Search */}
               <Field className="md:col-span-2">
                 <FieldLabel htmlFor="search">חיפוש חופשי</FieldLabel>
@@ -177,10 +178,8 @@ function OpenCallsPage() {
                 </Select>
               </Field>
             </div>
-
             <Separator className="my-6" />
-
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 opacity-30">
               <Badge variant="secondary" className="">
                 הכל
               </Badge>

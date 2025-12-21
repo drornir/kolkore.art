@@ -6,7 +6,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
         <h1 className="text-xl font-semibold">
           <Link to="/" className="flex items-center gap-2">
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+            <span className="text-2xl font-bold bg-linear-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
               קול קורא
             </span>
           </Link>
