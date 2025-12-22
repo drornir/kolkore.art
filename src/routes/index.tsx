@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
 import { zodValidator } from '@tanstack/zod-adapter'
 import {
   Building2,
@@ -45,6 +45,9 @@ import { getHomepageCalls } from '@/server/calls'
 
 export const Route = createFileRoute('/')({
   validateSearch: zodValidator(zodQueryParams),
+  search: {
+    middlewares: [stripSearchParams(zodQueryParams.parse({}))],
+  },
   loaderDeps: ({ search }) => search,
   loader: async ({ deps }) => {
     return { calls: await getHomepageCalls({ data: deps }) }
