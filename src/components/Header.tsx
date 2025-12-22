@@ -2,12 +2,12 @@ import { Link } from '@tanstack/react-router'
 
 export default function Header() {
   return (
-    <header className="p-4 flex items-center bg-gray-900 text-white shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
+    <header className="top-0 flex items-center bg-primary-foreground p-4 text-secondary shadow-lg">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
+        <h1 className="font-semibold text-xl">
           <Link to="/" className="flex items-center gap-2">
-            <span className="text-2xl font-bold bg-linear-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
-              קול קורא
+            <span className="bg-linear-to-r from-primary/85 to-primary bg-clip-text font-bold text-3xl text-transparent md:text-4xl">
+              קול קורא לאמנות
             </span>
           </Link>
         </h1>

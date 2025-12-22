@@ -19,6 +19,12 @@ export const getHomepageCalls = createServerFn()
     })
   })
 
+export const getHomepageFilterOptions = createServerFn()
+  .middleware([withCallsRepo])
+  .handler(async ({ context }) => {
+    return await context.callsRepo.queryOptions()
+  })
+
 export const getAdminCalls = createServerFn()
   .middleware([withAdminCallsRepo])
   .inputValidator(zodQueryParamsWithArchived)

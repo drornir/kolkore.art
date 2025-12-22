@@ -20,6 +20,12 @@ importers:
       '@fontsource-variable/inter':
         specifier: ^5.2.8
         version: 5.2.8
+      '@fontsource-variable/noto-sans-hebrew':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource-variable/open-sans':
+        specifier: ^5.2.7
+        version: 5.2.7
       '@libsql/client':
         specifier: ^0.15.15
         version: 0.15.15
@@ -1183,6 +1189,12 @@ packages:
 
   '@fontsource-variable/inter@5.2.8':
     resolution: {integrity: sha512-kOfP2D+ykbcX/P3IFnokOhVRNoTozo5/JxhAIVYLpea/UBmCQ/YWPBfWIDuBImXX/15KH+eKh4xpEUyS2sQQGQ==}
+
+  '@fontsource-variable/noto-sans-hebrew@5.2.8':
+    resolution: {integrity: sha512-km22GjnWdDcHExbnbzVQWsgwWWFglny2TPHAm9SITmW3lYhDPFumnbZxAfSFmRZafuXkm0NCcLfaxQG1koB2tw==}
+
+  '@fontsource-variable/open-sans@5.2.7':
+    resolution: {integrity: sha512-wzCLm2STuekK9Fz58DiuBnk4GgJpvvVtAU85a4b06ACNG/UsVjQcCvkUd6R/ETlHfsaykCUZamLRvSXg4KtWuA==}
 
   '@hono/node-server@1.19.7':
     resolution: {integrity: sha512-vUcD0uauS7EU2caukW8z5lJKtoGMokxNbJtBiwHgpqxEXokaHCBkQUmCHhjFB1VUTWdqj25QoMkMKzgjq+uhrw==}
@@ -5873,6 +5885,10 @@ snapshots:
   '@floating-ui/utils@0.2.10': {}
 
   '@fontsource-variable/inter@5.2.8': {}
+
+  '@fontsource-variable/noto-sans-hebrew@5.2.8': {}
+
+  '@fontsource-variable/open-sans@5.2.7': {}
 
   '@hono/node-server@1.19.7(hono@4.11.1)':
     dependencies:

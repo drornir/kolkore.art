@@ -7,6 +7,16 @@ import { defineConfig } from 'vite'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 const config = defineConfig({
+  server: {
+    host: '0.0.0.0',
+    port: 3400,
+    strictPort: true,
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+      port: 3400,
+    },
+  },
   plugins: [
     devtools(),
     nitro(),

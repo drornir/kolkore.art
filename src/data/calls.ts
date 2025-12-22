@@ -20,8 +20,8 @@ export const zodCallNoId = zodCall.omit({ id: true })
 export type CallNoId = z.infer<typeof zodCallNoId>
 
 const timeFilter = z.object({
-  after: z.date().optional().catch(undefined),
-  before: z.date().optional().catch(undefined),
+  after: z.coerce.date().optional().catch(undefined),
+  before: z.coerce.date().optional().catch(undefined),
 })
 export const zCallsFilters = z.object({
   search: z.string().optional().catch(undefined),
