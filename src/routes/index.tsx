@@ -12,6 +12,7 @@ import {
   MapPin,
   Search,
 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { type DateRange, DateRangePicker } from '@/components/DatePicker'
 import {
   Accordion,
@@ -44,7 +45,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
-import { zodQueryParams } from '@/data/calls'
+import { type CallsFilters, zodQueryParams } from '@/data/calls'
 import { getHomepageCalls, getHomepageFilterOptions } from '@/server/calls'
 
 export const Route = createFileRoute('/')({
@@ -70,6 +71,32 @@ export function OpenCallsPage() {
     queryFn: () => getFilters(),
     staleTime: Infinity,
   })
+
+  const [draftFilters, setDraftFilters] = useState<CallsFilters>(search.filters)
+
+  useEffect(() => {
+    setDraftFilters(search.filters)
+  }, [search.filters])
+
+  const handleApplyFilters = () => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        filters: draftFilters,
+      }),
+    })
+  }
+
+  const handleClearFilters = () => {
+    const emptyFilters = {}
+    setDraftFilters(emptyFilters)
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        filters: emptyFilters,
+      }),
+    })
+  }
 
   type SelectItems = Parameters<typeof Select>[0]['items']
   const toSelectItem = (s: string) => ({ label: s, value: s })
@@ -113,12 +140,9 @@ export function OpenCallsPage() {
       <section className="border-b bg-card py-16">
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <h1 className="mb-4 font-extrabold text-4xl text-foreground tracking-tight md:text-5xl">
-            לוח הזדמנויות לאמנים
+            הלוח
           </h1>
-          <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl">
-            מרכז המידע העדכני ביותר לקולות קוראים, מענקים, מלגות ותערוכות לאמנים
-            בישראל.
-          </p>
+          <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl"></p>
         </div>
       </section>
 
@@ -128,20 +152,39 @@ export function OpenCallsPage() {
           <CardContent className="p-4 md:p-6">
             <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-4">
               {/* Search */}
-              <Field className="md:col-span-2">
+              <Field className="md:col-span-3">
                 <FieldLabel htmlFor="search">שם</FieldLabel>
                 <InputGroup>
                   <InputGroupAddon className="pointer-events-none ps-3">
                     <Search className="h-4 w-4 text-muted-foreground" />
                   </InputGroupAddon>
-                  <InputGroupInput id="search" placeholder="" />
+                  <InputGroupInput
+                    id="search"
+                    placeholder=""
+                    value={draftFilters.search ?? ''}
+                    onChange={(e) =>
+                      setDraftFilters((prev) => ({
+                        ...prev,
+                        search: e.target.value || undefined,
+                      }))
+                    }
+                  />
                 </InputGroup>
               </Field>
 
               {/* Type Filter */}
               <Field>
                 <FieldLabel>סוג</FieldLabel>
-                <Select items={typesForSelect}>
+                <Select
+                  items={typesForSelect}
+                  value={draftFilters.type?.[0] ?? null}
+                  onValueChange={(val) =>
+                    setDraftFilters((prev) => ({
+                      ...prev,
+                      type: val ? [val] : undefined,
+                    }))
+                  }
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue />
                   </SelectTrigger>
@@ -160,7 +203,16 @@ export function OpenCallsPage() {
               {/* Location Filter */}
               <Field>
                 <FieldLabel>מיקום</FieldLabel>
-                <Select items={locationsForSelect}>
+                <Select
+                  items={locationsForSelect}
+                  value={draftFilters.location?.[0] ?? null}
+                  onValueChange={(val) =>
+                    setDraftFilters((prev) => ({
+                      ...prev,
+                      location: val ? [val] : undefined,
+                    }))
+                  }
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue />
                   </SelectTrigger>
@@ -179,7 +231,16 @@ export function OpenCallsPage() {
               {/* Institute Filter */}
               <Field>
                 <FieldLabel>מוסד</FieldLabel>
-                <Select items={institutionsForSelect}>
+                <Select
+                  items={institutionsForSelect}
+                  value={draftFilters.institution?.[0] ?? null}
+                  onValueChange={(val) =>
+                    setDraftFilters((prev) => ({
+                      ...prev,
+                      institution: val ? [val] : undefined,
+                    }))
+                  }
+                >
                   <SelectTrigger className="w-full">
                     <SelectValue />
                   </SelectTrigger>
@@ -200,24 +261,19 @@ export function OpenCallsPage() {
                 <FieldLabel>דדליין</FieldLabel>
                 <DateRangePicker
                   date={{
-                    from: search.filters?.deadline?.after,
-                    to: search.filters?.deadline?.before,
+                    from: draftFilters.deadline?.after,
+                    to: draftFilters.deadline?.before,
                   }}
                   onSelect={(range: DateRange | undefined) => {
-                    navigate({
-                      search: (prev) => ({
-                        ...prev,
-                        filters: {
-                          ...prev.filters,
-                          deadline: range
-                            ? {
-                                after: range.from,
-                                before: range.to,
-                              }
-                            : undefined,
-                        },
-                      }),
-                    })
+                    setDraftFilters((prev) => ({
+                      ...prev,
+                      deadline: range
+                        ? {
+                            after: range.from,
+                            before: range.to,
+                          }
+                        : undefined,
+                    }))
                   }}
                 />
               </Field>
@@ -227,39 +283,35 @@ export function OpenCallsPage() {
                 <FieldLabel>תאריך פרסום</FieldLabel>
                 <DateRangePicker
                   date={{
-                    from: search.filters?.createdAt?.after,
-                    to: search.filters?.createdAt?.before,
+                    from: draftFilters.createdAt?.after,
+                    to: draftFilters.createdAt?.before,
                   }}
                   onSelect={(range: DateRange | undefined) => {
-                    navigate({
-                      search: (prev) => ({
-                        ...prev,
-                        filters: {
-                          ...prev.filters,
-                          createdAt: range
-                            ? {
-                                after: range.from,
-                                before: range.to,
-                              }
-                            : undefined,
-                        },
-                      }),
-                    })
+                    setDraftFilters((prev) => ({
+                      ...prev,
+                      createdAt: range
+                        ? {
+                            after: range.from,
+                            before: range.to,
+                          }
+                        : undefined,
+                    }))
                   }}
                 />
               </Field>
             </div>
-            <Separator className="my-6" />
-            <div className="flex flex-wrap gap-2 opacity-30">
-              <Badge variant="secondary" className="">
-                הכל
-              </Badge>
-              <Badge variant="secondary" className="">
-                נסגר השבוע
-              </Badge>
-              <Badge variant="secondary" className="">
-                ללא עלות הגשה
-              </Badge>
+            <Separator className="my-4" />
+            <div className="mr-auto flex w-32 gap-2">
+              <Button onClick={handleApplyFilters} className="flex-2">
+                סינון{' '}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handleClearFilters}
+                className="flex-"
+              >
+                ללא סינון
+              </Button>
             </div>
           </CardContent>
         </Card>

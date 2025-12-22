@@ -52,7 +52,7 @@ export function DateRangePicker({
   date,
   onSelect,
   className,
-  placeholder = 'בחר תאריכים',
+  placeholder = 'בחירת תאריכים',
 }: {
   date: DateRange | undefined
   onSelect: (date: DateRange | undefined) => void
