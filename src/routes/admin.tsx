@@ -3,7 +3,7 @@ import {
   useQueryClient,
   useSuspenseQuery,
 } from '@tanstack/react-query'
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
 import { format } from 'date-fns'
 import { he } from 'date-fns/locale'
 import {
@@ -50,6 +50,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 import type { Call, CallNoId } from '@/data/calls'
+import { authClient } from '@/lib/auth-client'
 import { cn } from '@/lib/utils'
 import {
   archiveCall,
@@ -59,10 +60,19 @@ import {
 } from '@/server/calls'
 
 export const Route = createFileRoute('/admin')({
+  beforeLoad: async () => {
+    const { data: session } = await authClient.getSession()
+    if (!session || session.user.role !== 'admin') {
+      throw redirect({
+        to: '/login',
+      })
+    }
+  },
   component: AdminPage,
 })
 
 function AdminPage() {
+  const router = useRouter()
   const queryParams = {
     filters: {},
     sort: { by: 'createdAt' as const, order: 'desc' as const },
@@ -78,6 +88,20 @@ function AdminPage() {
     <div className="container mx-auto py-10 px-4" dir="rtl">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">ניהול קולות קוראים</h1>
+        <Button
+          variant="outline"
+          onClick={async () => {
+            await authClient.signOut({
+              fetchOptions: {
+                onSuccess: () => {
+                  router.navigate({ to: '/' })
+                },
+              },
+            })
+          }}
+        >
+          התנתק
+        </Button>
       </div>
 
       <div className="border rounded-md shadow-sm bg-card">

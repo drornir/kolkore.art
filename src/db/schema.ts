@@ -1,6 +1,8 @@
 import { sql } from 'drizzle-orm'
 import * as d from 'drizzle-orm/sqlite-core'
 
+export * from './auth-schema.ts'
+
 export const calls = d.sqliteTable(
   'calls',
   {

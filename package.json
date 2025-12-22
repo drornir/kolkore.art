@@ -13,7 +13,8 @@
     "fix": "biome check --write",
     "check": "concurrently --names biome,tsc 'biome check' 'tsc --noEmit' --pad-prefix",
     "db:push": "dotenv -e .env.local drizzle-kit push",
-    "db:push:prod": "dotenv -e .env.production drizzle-kit push"
+    "db:push:prod": "dotenv -e .env.production drizzle-kit push",
+    "better-auth:generate": "dotenv -e .env.local -- pnpm dlx @better-auth/cli generate --output src/db/auth-schema.ts && pnpm run format"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",
@@ -41,6 +42,7 @@
     "@tanstack/router-plugin": "^1.132.0",
     "@tanstack/store": "^0.7.0",
     "@tanstack/zod-adapter": "^1.141.8",
+    "better-auth": "^1.4.7",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
