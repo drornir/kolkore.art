@@ -6,6 +6,12 @@ import { db } from '@/db/drizzle'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db(), { provider: 'sqlite' }),
+  baseURL: (() => {
+    if (process.env.VERCEL_URL) {
+      return `https://${process.env.VERCEL_URL}`
+    }
+    return process.env.BETTER_AUTH_URL
+  })(),
   emailAndPassword: {
     enabled: true,
   },
