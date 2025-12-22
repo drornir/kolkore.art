@@ -1,5 +1,9 @@
+import { useQuery } from '@tanstack/react-query'
 import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
+import { useServerFn } from '@tanstack/react-start'
 import { zodValidator } from '@tanstack/zod-adapter'
+import { formatDistance } from 'date-fns'
+import { he } from 'date-fns/locale'
 import {
   Building2,
   CalendarDays,
@@ -7,7 +11,6 @@ import {
   Clock,
   MapPin,
   Search,
-  Tag,
 } from 'lucide-react'
 import {
   Accordion,
@@ -41,7 +44,7 @@ import {
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { zodQueryParams } from '@/data/calls'
-import { getHomepageCalls } from '@/server/calls'
+import { getHomepageCalls, getHomepageFilterOptions } from '@/server/calls'
 
 export const Route = createFileRoute('/')({
   validateSearch: zodValidator(zodQueryParams),
@@ -55,31 +58,26 @@ export const Route = createFileRoute('/')({
   component: OpenCallsPage,
 })
 
-function OpenCallsPage() {
+export function OpenCallsPage() {
   // const router = useRouter()
   const { calls } = Route.useLoaderData()
+  const getFilters = useServerFn(getHomepageFilterOptions)
+  const { data: filterOptionsData, isLoading: isLoadingFilters } = useQuery({
+    queryKey: ['filters'],
+    queryFn: () => getFilters(),
+    staleTime: Infinity,
+  })
+
+  const toSelectOption = (s: string) => ({ label: s, value: s })
 
   const typesForSelect: Parameters<typeof Select>[0]['items'] = [
     {
       label: 'כל הסוגים',
       value: null,
     },
-    {
-      label: 'שהות אמן (Residency)',
-      value: 'residency',
-    },
-    {
-      label: 'מענק',
-      value: 'grant',
-    },
-    {
-      label: 'קול קורא לתערוכה',
-      value: 'exhibition',
-    },
-    {
-      label: 'פסטיבל',
-      value: 'festival',
-    },
+    ...(isLoadingFilters ? [] : (filterOptionsData?.types ?? [])).map(
+      toSelectOption,
+    ),
   ]
 
   const locationsForSelect: Parameters<typeof Select>[0]['items'] = [
@@ -87,22 +85,19 @@ function OpenCallsPage() {
       label: 'כל הארץ',
       value: null,
     },
+    ...(isLoadingFilters ? [] : (filterOptionsData?.locations ?? [])).map(
+      toSelectOption,
+    ),
+  ]
+
+  const institutionsForSelect: Parameters<typeof Select>[0]['items'] = [
     {
-      label: 'תל אביב',
-      value: 'tel-aviv',
+      label: 'כל המוסדות',
+      value: null,
     },
-    {
-      label: 'ירושלים',
-      value: 'jerusalem',
-    },
-    {
-      label: 'חיפה',
-      value: 'haifa',
-    },
-    {
-      label: 'ארצי',
-      value: 'national',
-    },
+    ...(isLoadingFilters ? [] : (filterOptionsData?.institutions ?? [])).map(
+      toSelectOption,
+    ),
   ]
 
   return (
@@ -111,12 +106,12 @@ function OpenCallsPage() {
       dir="rtl"
     >
       {/* Hero Section */}
-      <section className="bg-card border-b py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight mb-4">
+      <section className="border-b bg-card py-16">
+        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+          <h1 className="mb-4 font-extrabold text-4xl text-foreground tracking-tight md:text-5xl">
             לוח הזדמנויות לאמנים
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl">
             מרכז המידע העדכני ביותר לקולות קוראים, מענקים, מלגות ותערוכות לאמנים
             בישראל.
           </p>
@@ -124,28 +119,24 @@ function OpenCallsPage() {
       </section>
 
       {/* Filters Section */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6">
+      <section className="-mt-6 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <Card className="border-none ring-1 ring-border">
           <CardContent className="p-4 md:p-6">
-            <span className="text-red-600">כל החלק הזה עדיין בפיתוח</span>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end opacity-30">
+            <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-4">
               {/* Search */}
               <Field className="md:col-span-2">
-                <FieldLabel htmlFor="search">חיפוש חופשי</FieldLabel>
+                <FieldLabel htmlFor="search">שם</FieldLabel>
                 <InputGroup>
-                  <InputGroupAddon className="ps-3 pointer-events-none">
+                  <InputGroupAddon className="pointer-events-none ps-3">
                     <Search className="h-4 w-4 text-muted-foreground" />
                   </InputGroupAddon>
-                  <InputGroupInput
-                    id="search"
-                    placeholder="חיפוש לפי מילת מפתח..."
-                  />
+                  <InputGroupInput id="search" placeholder="" />
                 </InputGroup>
               </Field>
 
               {/* Type Filter */}
               <Field>
-                <FieldLabel>סוג הזדמנות</FieldLabel>
+                <FieldLabel>סוג</FieldLabel>
                 <Select items={typesForSelect}>
                   <SelectTrigger className="w-full">
                     <SelectValue />
@@ -180,6 +171,27 @@ function OpenCallsPage() {
                   </SelectContent>
                 </Select>
               </Field>
+
+              {/* Institute Filter */}
+              <Field>
+                <FieldLabel>מוסד</FieldLabel>
+                <Select items={institutionsForSelect}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {institutionsForSelect.map(({ label, value }) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </Field>
+
+              {/* Deadline Filter */}
             </div>
             <Separator className="my-6" />
             <div className="flex flex-wrap gap-2 opacity-30">
@@ -198,49 +210,46 @@ function OpenCallsPage() {
       </section>
 
       {/* Main Content List */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+      <main className="mx-auto mt-10 max-w-4xl px-4 sm:px-6 lg:px-8">
         <div className="space-y-6">
           {calls.map((item) => (
             <Card
               key={item.id}
-              className="group overflow-hidden border-none ring-1 ring-border"
+              className="overflow-hidden border-none ring-1 ring-border"
             >
-              <CardHeader className="p-6 md:p-8 pb-0">
-                <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="secondary">
-                    <Tag className="w-3 h-3 me-1" />
-                    {item.type}
-                  </Badge>
-                </div>
-                <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors">
+              <CardHeader className="mb-0">
+                <CardTitle className="font-bold text-2xl">
                   {item.title}
                 </CardTitle>
+                <div className="my-2 flex items-center gap-2">
+                  <Badge variant="secondary">{item.type}</Badge>
+                </div>
                 {item.description && (
-                  <CardDescription className="text-base text-muted-foreground mt-2 line-clamp-2">
+                  <CardDescription className="mt-2 line-clamp-2 text-base text-muted-foreground">
                     {item.description}
                   </CardDescription>
                 )}
               </CardHeader>
 
-              <CardContent className="p-6 md:p-8 pt-4">
-                <div className="flex flex-wrap gap-y-2 gap-x-6 text-sm text-muted-foreground mb-6">
+              <CardContent className="p-6 pt-0 md:p-8">
+                <div className="mb-6 flex flex-wrap gap-x-6 gap-y-2 text-muted-foreground text-sm">
                   {item.institution && (
                     <div className="flex items-center">
-                      <Building2 className="w-4 h-4 me-1.5 opacity-70" />
+                      <Building2 className="me-1.5 h-4 w-4 opacity-70" />
                       {item.institution}
                     </div>
                   )}
                   {item.location && (
                     <div className="flex items-center">
-                      <MapPin className="w-4 h-4 me-1.5 opacity-70" />
+                      <MapPin className="me-1.5 h-4 w-4 opacity-70" />
                       {item.location}
                     </div>
                   )}
                   {item.deadline && (
-                    <div className="flex items-center text-destructive font-medium bg-destructive/10 px-2 py-0.5 rounded-sm">
-                      <Clock className="w-4 h-4 me-1.5" />
+                    <div className="flex items-center rounded-sm bg-primary/10 px-2 py-0.5 font-medium text-secondary-foreground">
+                      <Clock className="me-1.5 h-4 w-4" />
                       דדליין:
-                      {item.deadline?.toLocaleDateString()}
+                      {` ${item.deadline?.toLocaleDateString('he-IL')}`}
                     </div>
                   )}
                 </div>
@@ -248,13 +257,13 @@ function OpenCallsPage() {
                 {item.requirements && (
                   <Accordion className="w-full">
                     <AccordionItem value="requirements" className="border-none">
-                      <AccordionTrigger className="bg-muted/30 px-4 py-2 rounded-lg hover:no-underline hover:bg-muted/50 transition-colors">
-                        <span className="font-semibold text-foreground">
+                      <AccordionTrigger className="rounded-lg bg-muted/30 px-4 py-2 transition-colors hover:bg-muted/50 hover:no-underline">
+                        <span className="font-light text-foreground">
                           דרישות עיקריות
                         </span>
                       </AccordionTrigger>
-                      <AccordionContent className="pt-4 px-4">
-                        <ul className="list-disc list-inside space-y-1 text-muted-foreground marker:text-muted-foreground/50">
+                      <AccordionContent className="px-4 pt-4">
+                        <ul className="list-inside list-disc space-y-1 text-secondary-foreground marker:text-secondary-foreground/20">
                           {item.requirements.map((req, idx) => (
                             // biome-ignore lint/suspicious/noArrayIndexKey: static
                             <li key={idx}>{req}</li>
@@ -266,10 +275,13 @@ function OpenCallsPage() {
                 )}
               </CardContent>
 
-              <CardFooter className="p-4 bg-muted/10 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <div className="flex items-center text-xs text-muted-foreground">
-                  <CalendarDays className="w-4 h-4 me-1.5 opacity-50" />
-                  <span>פורסם לפני יומיים</span>
+              <CardFooter className="flex flex-col items-center justify-between gap-4 bg-muted/10 p-4 sm:flex-row">
+                <div className="flex items-center text-muted-foreground text-xs">
+                  <CalendarDays className="me-1.5 h-4 w-4 opacity-50" />
+                  <span>
+                    פורסם לפני{' '}
+                    {formatDistance(item.createdAt, new Date(), { locale: he })}
+                  </span>
                 </div>
                 {item.link && (
                   <Button className="w-full sm:w-auto">
@@ -279,7 +291,7 @@ function OpenCallsPage() {
                       rel="noopener noreferrer"
                     >
                       פרטים והגשה
-                      <ChevronLeft className="w-4 h-4 ms-1.5 inline" />
+                      <ChevronLeft className="ms-1.5 inline h-4 w-4" />
                     </a>
                   </Button>
                 )}

@@ -4,12 +4,9 @@ import {
   useSuspenseQuery,
 } from '@tanstack/react-query'
 import { createFileRoute, redirect, useRouter } from '@tanstack/react-router'
-import { format } from 'date-fns'
-import { he } from 'date-fns/locale'
 import {
   Archive,
   ArchiveRestore,
-  CalendarIcon,
   ExternalLink,
   Loader2,
   Maximize2,
@@ -17,9 +14,8 @@ import {
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-
+import { DatePicker } from '@/components/DatePicker'
 import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
 import {
   Dialog,
   DialogContent,
@@ -29,11 +25,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
 import {
   Table,
   TableBody,
@@ -85,9 +76,9 @@ function AdminPage() {
   })
 
   return (
-    <div className="container mx-auto py-10 px-4" dir="rtl">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">ניהול קולות קוראים</h1>
+    <div className="container mx-auto px-4 py-10" dir="rtl">
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="font-bold text-3xl">ניהול קולות קוראים</h1>
         <Button
           variant="outline"
           onClick={async () => {
@@ -104,7 +95,7 @@ function AdminPage() {
         </Button>
       </div>
 
-      <div className="border rounded-md shadow-sm bg-card">
+      <div className="rounded-md border bg-card shadow-sm">
         <TooltipProvider>
           <Table>
             <TableHeader>
@@ -197,9 +188,9 @@ function NewCallRow() {
   }
 
   return (
-    <TableRow className="bg-primary/5 hover:bg-primary/10 transition-colors border-b-2 border-primary/20">
+    <TableRow className="border-primary/20 border-b-2 bg-primary/5 transition-colors hover:bg-primary/10">
       <TableCell className="text-center">
-        <Plus className="w-4 h-4 mx-auto text-primary" />
+        <Plus className="mx-auto h-4 w-4 text-primary" />
       </TableCell>
       <TableCell>
         <Input
@@ -268,7 +259,7 @@ function NewCallRow() {
           placeholder="https://..."
           value={data.link ?? ''}
           onChange={(e) => handleChange('link', e.target.value)}
-          className="h-8 bg-background w-full min-w-25"
+          className="h-8 w-full min-w-25 bg-background"
         />
       </TableCell>
       <TableCell className="text-center">
@@ -278,9 +269,9 @@ function NewCallRow() {
           disabled={!data.title || createMutation.isPending}
         >
           {createMutation.isPending ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
-            <Plus className="w-4 h-4" />
+            <Plus className="h-4 w-4" />
           )}
           <span className="sr-only">הוסף</span>
         </Button>
@@ -363,8 +354,8 @@ function EditableCallRow({ call }: { call: Call }) {
   const isArchived = !!call.archivedAt
 
   return (
-    <TableRow className={cn(isArchived && 'opacity-60 bg-muted')}>
-      <TableCell className="text-center text-xs text-muted-foreground">
+    <TableRow className={cn(isArchived && 'bg-muted opacity-60')}>
+      <TableCell className="text-center text-muted-foreground text-xs">
         {call.id}
       </TableCell>
       <TableCell>
@@ -372,7 +363,7 @@ function EditableCallRow({ call }: { call: Call }) {
           value={localData.title}
           onChange={(e) => handleChange('title', e.target.value)}
           onBlur={(e) => handleBlur('title', e.target.value)}
-          className="h-8 border-transparent hover:border-input focus:border-ring bg-transparent focus:bg-background transition-colors"
+          className="h-8 border-transparent bg-transparent transition-colors hover:border-input focus:border-ring focus:bg-background"
         />
       </TableCell>
       <TableCell>
@@ -380,7 +371,7 @@ function EditableCallRow({ call }: { call: Call }) {
           value={localData.institution ?? ''}
           onChange={(e) => handleChange('institution', e.target.value)}
           onBlur={(e) => handleBlur('institution', e.target.value)}
-          className="h-8 border-transparent hover:border-input focus:border-ring bg-transparent focus:bg-background transition-colors"
+          className="h-8 border-transparent bg-transparent transition-colors hover:border-input focus:border-ring focus:bg-background"
         />
       </TableCell>
       <TableCell>
@@ -388,7 +379,7 @@ function EditableCallRow({ call }: { call: Call }) {
           value={localData.type ?? ''}
           onChange={(e) => handleChange('type', e.target.value)}
           onBlur={(e) => handleBlur('type', e.target.value)}
-          className="h-8 border-transparent hover:border-input focus:border-ring bg-transparent focus:bg-background transition-colors"
+          className="h-8 border-transparent bg-transparent transition-colors hover:border-input focus:border-ring focus:bg-background"
         />
       </TableCell>
       <TableCell>
@@ -396,7 +387,7 @@ function EditableCallRow({ call }: { call: Call }) {
           value={localData.location ?? ''}
           onChange={(e) => handleChange('location', e.target.value)}
           onBlur={(e) => handleBlur('location', e.target.value)}
-          className="h-8 border-transparent hover:border-input focus:border-ring bg-transparent focus:bg-background transition-colors"
+          className="h-8 border-transparent bg-transparent transition-colors hover:border-input focus:border-ring focus:bg-background"
         />
       </TableCell>
       <TableCell>
@@ -406,7 +397,7 @@ function EditableCallRow({ call }: { call: Call }) {
             handleChange('deadline', d)
             handleBlur('deadline', d)
           }}
-          className="border-transparent hover:border-input bg-transparent"
+          className="border-transparent bg-transparent hover:border-input"
         />
       </TableCell>
       <TableCell className="text-center">
@@ -448,7 +439,7 @@ function EditableCallRow({ call }: { call: Call }) {
               rel="noreferrer"
               className="text-blue-500 hover:text-blue-700"
             >
-              <ExternalLink className="w-4 h-4" />
+              <ExternalLink className="h-4 w-4" />
             </a>
           ) : (
             <span className="text-muted-foreground">-</span>
@@ -471,11 +462,11 @@ function EditableCallRow({ call }: { call: Call }) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50"
+                className="h-8 w-8 text-green-600 hover:bg-green-50 hover:text-green-700"
                 onClick={() => archiveMutation.mutate({ unarchive: true })}
                 disabled={archiveMutation.isPending}
               >
-                <ArchiveRestore className="w-4 h-4" />
+                <ArchiveRestore className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>שחזר מארכיון</TooltipContent>
@@ -486,11 +477,11 @@ function EditableCallRow({ call }: { call: Call }) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-destructive/80 hover:text-destructive hover:bg-destructive/10"
+                className="h-8 w-8 text-destructive/80 hover:bg-destructive/10 hover:text-destructive"
                 onClick={() => archiveMutation.mutate({ unarchive: false })}
                 disabled={archiveMutation.isPending}
               >
-                <Archive className="w-4 h-4" />
+                <Archive className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>העבר לארכיון</TooltipContent>
@@ -498,43 +489,6 @@ function EditableCallRow({ call }: { call: Call }) {
         )}
       </TableCell>
     </TableRow>
-  )
-}
-
-function DatePicker({
-  date,
-  onSelect,
-  className,
-}: {
-  date: Date | null | undefined
-  onSelect: (date: Date | null) => void
-  className?: string
-}) {
-  return (
-    <Popover>
-      <PopoverTrigger>
-        <Button
-          variant={'outline'}
-          className={cn(
-            'w-full justify-start text-left font-normal h-8 px-2 text-xs',
-            !date && 'text-muted-foreground',
-            className,
-          )}
-        >
-          {date ? format(date, 'P', { locale: he }) : <span>בחר</span>}
-          <CalendarIcon className="mr-auto h-3 w-3 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="single"
-          locale={he}
-          selected={date ?? undefined}
-          onSelect={(d) => onSelect(d ?? null)}
-          initialFocus
-        />
-      </PopoverContent>
-    </Popover>
   )
 }
 
@@ -570,21 +524,21 @@ function LongTextEditor({
       <DialogTrigger>
         {iconOnly ? (
           <Button variant="ghost" size="icon" className="h-6 w-6">
-            <Maximize2 className="w-3 h-3" />
+            <Maximize2 className="h-3 w-3" />
           </Button>
         ) : (
           <Button
             variant="outline"
             size="sm"
             className={cn(
-              'h-8 px-2 text-xs w-full justify-between',
+              'h-8 w-full justify-between px-2 text-xs',
               !hasContent &&
                 value.length === 0 &&
-                'text-muted-foreground border-dashed',
+                'border-dashed text-muted-foreground',
             )}
           >
             {hasContent || value.length > 0 ? 'יש תוכן' : 'ריק'}
-            <Maximize2 className="w-3 h-3 ms-2 opacity-50" />
+            <Maximize2 className="ms-2 h-3 w-3 opacity-50" />
           </Button>
         )}
       </DialogTrigger>

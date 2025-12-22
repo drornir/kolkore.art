@@ -29,10 +29,10 @@ function SignIn() {
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 p-4"
+      className="flex min-h-screen items-center justify-center bg-gray-100 p-4 dark:bg-gray-900"
       dir="rtl"
     >
-      <Card className="max-w-md w-full">
+      <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-lg md:text-xl">התחברות</CardTitle>
           <CardDescription className="text-xs md:text-sm">
@@ -126,8 +126,8 @@ function SignIn() {
           </div>
         </CardContent>
         <CardFooter>
-          <div className="flex justify-center w-full border-t py-4">
-            <p className="text-center text-xs text-neutral-500">
+          <div className="flex w-full justify-center border-t py-4">
+            <p className="text-center text-neutral-500 text-xs">
               נבנה עם{' '}
               <a
                 href="https://better-auth.com"
@@ -135,7 +135,7 @@ function SignIn() {
                 target="_blank"
                 rel="noreferrer"
               >
-                <span className="dark:text-white/70 cursor-pointer">
+                <span className="cursor-pointer dark:text-white/70">
                   better-auth.
                 </span>
               </a>

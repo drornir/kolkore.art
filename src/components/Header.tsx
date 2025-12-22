@@ -2,11 +2,11 @@ import { Link } from '@tanstack/react-router'
 
 export default function Header() {
   return (
-    <header className="p-4 flex items-center bg-gray-900 text-white shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
+    <header className="sticky top-0 z-50 flex items-center bg-gray-900 p-4 text-white shadow-lg">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
+        <h1 className="font-semibold text-xl">
           <Link to="/" className="flex items-center gap-2">
-            <span className="text-2xl font-bold bg-linear-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-blue-400 to-cyan-300 bg-clip-text font-bold text-2xl text-transparent">
               קול קורא
             </span>
           </Link>

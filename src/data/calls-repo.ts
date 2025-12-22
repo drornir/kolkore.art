@@ -96,6 +96,26 @@ export class QueryRepo {
     const zOut = omitArchivedAt ? zodCall.omit({ archivedAt: true }) : zodCall
     return res.map((row) => zOut.parse(row))
   }
+
+  queryOptions = async () => {
+    const typesP = this.db.selectDistinct({ opt: table.type }).from(table)
+    const locationsP = this.db
+      .selectDistinct({ opt: table.location })
+      .from(table)
+    const institutionsP = this.db
+      .selectDistinct({ opt: table.institution })
+      .from(table)
+    const processResponse = (opts: { opt: string | null }[]): string[] =>
+      opts
+        .map((o) => o.opt)
+        .filter((o) => o !== null)
+        .filter((s) => s.length > 0)
+    const [types, locations, institutions] = await Promise.all(
+      [typesP, locationsP, institutionsP].map((p) => p.then(processResponse)),
+    )
+
+    return { types, locations, institutions }
+  }
 }
 
 export class AdminRepo {
