@@ -12,6 +12,7 @@ import {
   MapPin,
   Search,
 } from 'lucide-react'
+import { type DateRange, DateRangePicker } from '@/components/DatePicker'
 import {
   Accordion,
   AccordionContent,
@@ -61,6 +62,8 @@ export const Route = createFileRoute('/')({
 export function OpenCallsPage() {
   // const router = useRouter()
   const { calls } = Route.useLoaderData()
+  const search = Route.useSearch()
+  const navigate = Route.useNavigate()
   const getFilters = useServerFn(getHomepageFilterOptions)
   const { data: filterOptionsData, isLoading: isLoadingFilters } = useQuery({
     queryKey: ['filters'],
@@ -68,7 +71,8 @@ export function OpenCallsPage() {
     staleTime: Infinity,
   })
 
-  const toSelectOption = (s: string) => ({ label: s, value: s })
+  type SelectItems = Parameters<typeof Select>[0]['items']
+  const toSelectItem = (s: string) => ({ label: s, value: s })
 
   const typesForSelect: Parameters<typeof Select>[0]['items'] = [
     {
@@ -76,27 +80,27 @@ export function OpenCallsPage() {
       value: null,
     },
     ...(isLoadingFilters ? [] : (filterOptionsData?.types ?? [])).map(
-      toSelectOption,
+      toSelectItem,
     ),
   ]
 
-  const locationsForSelect: Parameters<typeof Select>[0]['items'] = [
+  const locationsForSelect: SelectItems = [
     {
       label: 'כל הארץ',
       value: null,
     },
     ...(isLoadingFilters ? [] : (filterOptionsData?.locations ?? [])).map(
-      toSelectOption,
+      toSelectItem,
     ),
   ]
 
-  const institutionsForSelect: Parameters<typeof Select>[0]['items'] = [
+  const institutionsForSelect: SelectItems = [
     {
       label: 'כל המוסדות',
       value: null,
     },
     ...(isLoadingFilters ? [] : (filterOptionsData?.institutions ?? [])).map(
-      toSelectOption,
+      toSelectItem,
     ),
   ]
 
@@ -192,6 +196,58 @@ export function OpenCallsPage() {
               </Field>
 
               {/* Deadline Filter */}
+              <Field>
+                <FieldLabel>דדליין</FieldLabel>
+                <DateRangePicker
+                  date={{
+                    from: search.filters?.deadline?.after,
+                    to: search.filters?.deadline?.before,
+                  }}
+                  onSelect={(range: DateRange | undefined) => {
+                    navigate({
+                      search: (prev) => ({
+                        ...prev,
+                        filters: {
+                          ...prev.filters,
+                          deadline: range
+                            ? {
+                                after: range.from,
+                                before: range.to,
+                              }
+                            : undefined,
+                        },
+                      }),
+                    })
+                  }}
+                />
+              </Field>
+
+              {/* CreatedAt Filter */}
+              <Field>
+                <FieldLabel>תאריך פרסום</FieldLabel>
+                <DateRangePicker
+                  date={{
+                    from: search.filters?.createdAt?.after,
+                    to: search.filters?.createdAt?.before,
+                  }}
+                  onSelect={(range: DateRange | undefined) => {
+                    navigate({
+                      search: (prev) => ({
+                        ...prev,
+                        filters: {
+                          ...prev.filters,
+                          createdAt: range
+                            ? {
+                                after: range.from,
+                                before: range.to,
+                              }
+                            : undefined,
+                        },
+                      }),
+                    })
+                  }}
+                />
+              </Field>
             </div>
             <Separator className="my-6" />
             <div className="flex flex-wrap gap-2 opacity-30">

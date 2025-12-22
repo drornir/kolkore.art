@@ -10,7 +10,7 @@ using Tanstack Query that is initialized with the convex provider.
 
 # check for issues
 
-After making changes to the code, run `pnpm run check` do detect problems in the code. Do not fix problems you did not cause in your mosr recent change.
+After making changes to the code, run `pnpm run check` do detect problems in the code. Do not fix problems you did not cause in your most recent change. You should always run `pnpm run fix` before trying to fix manually.
 
 # typescript style
 
