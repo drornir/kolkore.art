@@ -131,9 +131,14 @@ export function OpenCallsPage() {
     ),
   ]
 
+  const onFormSubmit: React.FormEventHandler = (event) => {
+    event.preventDefault()
+    handleApplyFilters()
+  }
+
   return (
     <div
-      className="min-h-screen bg-background pb-12 font-sans text-foreground"
+      className="flex-1 bg-background pb-12 font-sans text-foreground"
       dir="rtl"
     >
       {/* Hero Section */}
@@ -148,173 +153,180 @@ export function OpenCallsPage() {
 
       {/* Filters Section */}
       <section className="-mt-6 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        <Card className="border-none ring-1 ring-border">
-          <CardContent className="p-4 md:p-6">
-            <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-4">
-              {/* Search */}
-              <Field className="md:col-span-3">
-                <FieldLabel htmlFor="search">שם</FieldLabel>
-                <InputGroup>
-                  <InputGroupAddon className="pointer-events-none ps-3">
-                    <Search className="h-4 w-4 text-muted-foreground" />
-                  </InputGroupAddon>
-                  <InputGroupInput
-                    id="search"
-                    placeholder=""
-                    value={draftFilters.search ?? ''}
-                    onChange={(e) =>
+        <form onSubmit={onFormSubmit}>
+          <Card className="border-none ring-1 ring-border">
+            <CardContent className="p-4 md:p-6">
+              <div className="grid grid-cols-1 items-end gap-4 md:grid-cols-4">
+                {/* Search */}
+                <Field className="md:col-span-3">
+                  <FieldLabel htmlFor="search">שם</FieldLabel>
+                  <InputGroup>
+                    <InputGroupAddon className="pointer-events-none ps-3">
+                      <Search className="h-4 w-4 text-muted-foreground" />
+                    </InputGroupAddon>
+                    <InputGroupInput
+                      id="search"
+                      placeholder=""
+                      value={draftFilters.search ?? ''}
+                      onChange={(e) =>
+                        setDraftFilters((prev) => ({
+                          ...prev,
+                          search: e.target.value || undefined,
+                        }))
+                      }
+                    />
+                  </InputGroup>
+                </Field>
+
+                {/* Type Filter */}
+                <Field>
+                  <FieldLabel>סוג</FieldLabel>
+                  <Select
+                    items={typesForSelect}
+                    value={draftFilters.type?.[0] ?? null}
+                    onValueChange={(val) =>
                       setDraftFilters((prev) => ({
                         ...prev,
-                        search: e.target.value || undefined,
+                        type: val ? [val] : undefined,
                       }))
                     }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {typesForSelect.map(({ label, value }) => (
+                          <SelectItem key={value} value={value}>
+                            {label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </Field>
+
+                {/* Location Filter */}
+                <Field>
+                  <FieldLabel>מיקום</FieldLabel>
+                  <Select
+                    items={locationsForSelect}
+                    value={draftFilters.location?.[0] ?? null}
+                    onValueChange={(val) =>
+                      setDraftFilters((prev) => ({
+                        ...prev,
+                        location: val ? [val] : undefined,
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {locationsForSelect.map(({ label, value }) => (
+                          <SelectItem key={value} value={value}>
+                            {label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </Field>
+
+                {/* Institute Filter */}
+                <Field>
+                  <FieldLabel>מוסד</FieldLabel>
+                  <Select
+                    items={institutionsForSelect}
+                    value={draftFilters.institution?.[0] ?? null}
+                    onValueChange={(val) =>
+                      setDraftFilters((prev) => ({
+                        ...prev,
+                        institution: val ? [val] : undefined,
+                      }))
+                    }
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {institutionsForSelect.map(({ label, value }) => (
+                          <SelectItem key={value} value={value}>
+                            {label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </Field>
+
+                {/* Deadline Filter */}
+                <Field>
+                  <FieldLabel>דדליין</FieldLabel>
+                  <DateRangePicker
+                    date={{
+                      from: draftFilters.deadline?.after,
+                      to: draftFilters.deadline?.before,
+                    }}
+                    onSelect={(range: DateRange | undefined) => {
+                      setDraftFilters((prev) => ({
+                        ...prev,
+                        deadline: range
+                          ? {
+                              after: range.from,
+                              before: range.to,
+                            }
+                          : undefined,
+                      }))
+                    }}
                   />
-                </InputGroup>
-              </Field>
+                </Field>
 
-              {/* Type Filter */}
-              <Field>
-                <FieldLabel>סוג</FieldLabel>
-                <Select
-                  items={typesForSelect}
-                  value={draftFilters.type?.[0] ?? null}
-                  onValueChange={(val) =>
-                    setDraftFilters((prev) => ({
-                      ...prev,
-                      type: val ? [val] : undefined,
-                    }))
-                  }
+                {/* CreatedAt Filter */}
+                <Field>
+                  <FieldLabel>תאריך פרסום</FieldLabel>
+                  <DateRangePicker
+                    date={{
+                      from: draftFilters.createdAt?.after,
+                      to: draftFilters.createdAt?.before,
+                    }}
+                    onSelect={(range: DateRange | undefined) => {
+                      setDraftFilters((prev) => ({
+                        ...prev,
+                        createdAt: range
+                          ? {
+                              after: range.from,
+                              before: range.to,
+                            }
+                          : undefined,
+                      }))
+                    }}
+                  />
+                </Field>
+                {/* Toggles */}
+                <div></div>
+              </div>
+              <Separator className="my-4" />
+              <div className="mr-auto flex w-32 gap-2">
+                <Button
+                  type="submit" /* onClick={handleApplyFilters} */
+                  className="flex-2"
                 >
-                  <SelectTrigger className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {typesForSelect.map(({ label, value }) => (
-                        <SelectItem key={value} value={value}>
-                          {label}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </Field>
-
-              {/* Location Filter */}
-              <Field>
-                <FieldLabel>מיקום</FieldLabel>
-                <Select
-                  items={locationsForSelect}
-                  value={draftFilters.location?.[0] ?? null}
-                  onValueChange={(val) =>
-                    setDraftFilters((prev) => ({
-                      ...prev,
-                      location: val ? [val] : undefined,
-                    }))
-                  }
+                  סינון{' '}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleClearFilters}
+                  className="flex-"
                 >
-                  <SelectTrigger className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {locationsForSelect.map(({ label, value }) => (
-                        <SelectItem key={value} value={value}>
-                          {label}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </Field>
-
-              {/* Institute Filter */}
-              <Field>
-                <FieldLabel>מוסד</FieldLabel>
-                <Select
-                  items={institutionsForSelect}
-                  value={draftFilters.institution?.[0] ?? null}
-                  onValueChange={(val) =>
-                    setDraftFilters((prev) => ({
-                      ...prev,
-                      institution: val ? [val] : undefined,
-                    }))
-                  }
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {institutionsForSelect.map(({ label, value }) => (
-                        <SelectItem key={value} value={value}>
-                          {label}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </Field>
-
-              {/* Deadline Filter */}
-              <Field>
-                <FieldLabel>דדליין</FieldLabel>
-                <DateRangePicker
-                  date={{
-                    from: draftFilters.deadline?.after,
-                    to: draftFilters.deadline?.before,
-                  }}
-                  onSelect={(range: DateRange | undefined) => {
-                    setDraftFilters((prev) => ({
-                      ...prev,
-                      deadline: range
-                        ? {
-                            after: range.from,
-                            before: range.to,
-                          }
-                        : undefined,
-                    }))
-                  }}
-                />
-              </Field>
-
-              {/* CreatedAt Filter */}
-              <Field>
-                <FieldLabel>תאריך פרסום</FieldLabel>
-                <DateRangePicker
-                  date={{
-                    from: draftFilters.createdAt?.after,
-                    to: draftFilters.createdAt?.before,
-                  }}
-                  onSelect={(range: DateRange | undefined) => {
-                    setDraftFilters((prev) => ({
-                      ...prev,
-                      createdAt: range
-                        ? {
-                            after: range.from,
-                            before: range.to,
-                          }
-                        : undefined,
-                    }))
-                  }}
-                />
-              </Field>
-            </div>
-            <Separator className="my-4" />
-            <div className="mr-auto flex w-32 gap-2">
-              <Button onClick={handleApplyFilters} className="flex-2">
-                סינון{' '}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleClearFilters}
-                className="flex-"
-              >
-                ללא סינון
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+                  ללא סינון
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </form>
       </section>
 
       {/* Main Content List */}

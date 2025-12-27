@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router'
 
 export default function Header() {
   return (
-    <header className="top-0 flex items-center bg-primary-foreground p-4 text-secondary shadow-lg">
+    <header className="top-0 flex flex-none items-center bg-primary-foreground p-4 text-secondary shadow-lg">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
         <h1 className="font-semibold text-xl">
           <Link to="/" className="flex items-center gap-2">

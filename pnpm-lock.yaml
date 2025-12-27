@@ -20,12 +20,12 @@ importers:
       '@fontsource-variable/inter':
         specifier: ^5.2.8
         version: 5.2.8
-      '@fontsource-variable/noto-sans-hebrew':
-        specifier: ^5.2.8
-        version: 5.2.8
       '@fontsource-variable/open-sans':
         specifier: ^5.2.7
         version: 5.2.7
+      '@fontsource/noto-sans-hebrew':
+        specifier: ^5.2.8
+        version: 5.2.8
       '@libsql/client':
         specifier: ^0.15.15
         version: 0.15.15
@@ -1190,11 +1190,11 @@ packages:
   '@fontsource-variable/inter@5.2.8':
     resolution: {integrity: sha512-kOfP2D+ykbcX/P3IFnokOhVRNoTozo5/JxhAIVYLpea/UBmCQ/YWPBfWIDuBImXX/15KH+eKh4xpEUyS2sQQGQ==}
 
-  '@fontsource-variable/noto-sans-hebrew@5.2.8':
-    resolution: {integrity: sha512-km22GjnWdDcHExbnbzVQWsgwWWFglny2TPHAm9SITmW3lYhDPFumnbZxAfSFmRZafuXkm0NCcLfaxQG1koB2tw==}
-
   '@fontsource-variable/open-sans@5.2.7':
     resolution: {integrity: sha512-wzCLm2STuekK9Fz58DiuBnk4GgJpvvVtAU85a4b06ACNG/UsVjQcCvkUd6R/ETlHfsaykCUZamLRvSXg4KtWuA==}
+
+  '@fontsource/noto-sans-hebrew@5.2.8':
+    resolution: {integrity: sha512-FN/GDpE709JQN5f7vmqlbIwz2/vAM6ZnXqRsw47Piq731hvti55V/FLbyU2RWUvlis16ezPf0r+zKTjfdeXF/g==}
 
   '@hono/node-server@1.19.7':
     resolution: {integrity: sha512-vUcD0uauS7EU2caukW8z5lJKtoGMokxNbJtBiwHgpqxEXokaHCBkQUmCHhjFB1VUTWdqj25QoMkMKzgjq+uhrw==}
@@ -5886,9 +5886,9 @@ snapshots:
 
   '@fontsource-variable/inter@5.2.8': {}
 
-  '@fontsource-variable/noto-sans-hebrew@5.2.8': {}
-
   '@fontsource-variable/open-sans@5.2.7': {}
+
+  '@fontsource/noto-sans-hebrew@5.2.8': {}
 
   '@hono/node-server@1.19.7(hono@4.11.1)':
     dependencies:

@@ -32,7 +32,7 @@ export function DatePicker({
           className,
         )}
       >
-        {date ? format(date, 'P', { locale: he }) : <span>בחר</span>}
+        {date ? format(date, 'P', { locale: he }) : <span>בחירה</span>}
         <CalendarIcon className="mr-auto h-3 w-3 opacity-50" />
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
