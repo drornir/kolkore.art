@@ -1,6 +1,7 @@
 {
   // "file_scan_exclusions": ["**/routeTree.gen.ts"],
   "language_servers": ["typescript-language-server", "!vtsls", "..."],
+  "use_on_type_format": false,
   "languages": {
     "JavaScript": {
       "formatter": {
