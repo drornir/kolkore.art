@@ -138,7 +138,7 @@ export function OpenCallsPage() {
 
   return (
     <div
-      className="min-h-screen bg-background pb-12 font-sans text-foreground"
+      className="flex-1 bg-background pb-12 font-sans text-foreground"
       dir="rtl"
     >
       {/* Hero Section */}

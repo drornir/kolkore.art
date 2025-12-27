@@ -15,7 +15,7 @@ import {
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { DatePicker } from '@/components/DatePicker'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -76,7 +76,7 @@ function AdminPage() {
   })
 
   return (
-    <div className="container mx-auto px-4 py-10" dir="rtl">
+    <div className="mx-auto w-full px-4 py-10" dir="rtl">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-bold text-3xl">ניהול קולות קוראים</h1>
         <Button
@@ -91,7 +91,7 @@ function AdminPage() {
             })
           }}
         >
-          התנתק
+          התנתקות
         </Button>
       </div>
 
@@ -159,7 +159,7 @@ function NewCallRow() {
       return await createCall({ data: submissionData })
     },
     onSuccess: () => {
-      toast.success('נוצר בהצלחה')
+      toast.success('היצירה הושלמה בהצלחה')
       setData({
         title: '',
         institution: '',
@@ -235,7 +235,7 @@ function NewCallRow() {
           title="תיאור"
           value={data.description ?? ''}
           onSave={(val) => handleChange('description', val)}
-          placeholder="ערוך תיאור..."
+          placeholder="עריכת תיאור..."
         />
       </TableCell>
       <TableCell className="text-center">
@@ -251,7 +251,7 @@ function NewCallRow() {
                 .filter(Boolean),
             )
           }
-          placeholder="ערוך דרישות..."
+          placeholder="עריכת דרישות..."
         />
       </TableCell>
       <TableCell className="text-center">
@@ -273,7 +273,7 @@ function NewCallRow() {
           ) : (
             <Plus className="h-4 w-4" />
           )}
-          <span className="sr-only">הוסף</span>
+          <span className="sr-only">הוספה</span>
         </Button>
       </TableCell>
     </TableRow>
@@ -297,7 +297,7 @@ function EditableCallRow({ call }: { call: Call }) {
       return await updateCall({ data: { id: call.id, data: updates } })
     },
     onSuccess: () => {
-      toast.success('עודכן', { position: 'bottom-left', duration: 1500 })
+      toast.success('העדכון נשמר', { position: 'bottom-left', duration: 1500 })
       queryClient.invalidateQueries({ queryKey: ['admin-calls'] })
       router.invalidate()
     },
@@ -458,33 +458,34 @@ function EditableCallRow({ call }: { call: Call }) {
       <TableCell className="text-center">
         {isArchived ? (
           <Tooltip>
-            <TooltipTrigger>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-green-600 hover:bg-green-50 hover:text-green-700"
-                onClick={() => archiveMutation.mutate({ unarchive: true })}
-                disabled={archiveMutation.isPending}
-              >
-                <ArchiveRestore className="h-4 w-4" />
-              </Button>
+            <TooltipTrigger
+              onClick={() => archiveMutation.mutate({ unarchive: true })}
+              className={cn(
+                'h-8 w-8 text-green-600 hover:bg-green-50 hover:text-green-700',
+                buttonVariants({ variant: 'ghost', size: 'icon' }),
+              )}
+              disabled={archiveMutation.isPending}
+            >
+              <ArchiveRestore className="h-4 w-4" />
             </TooltipTrigger>
-            <TooltipContent>שחזר מארכיון</TooltipContent>
+            <TooltipContent>שחזור מארכיון</TooltipContent>
           </Tooltip>
         ) : (
           <Tooltip>
-            <TooltipTrigger>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-destructive/80 hover:bg-destructive/10 hover:text-destructive"
-                onClick={() => archiveMutation.mutate({ unarchive: false })}
-                disabled={archiveMutation.isPending}
-              >
-                <Archive className="h-4 w-4" />
-              </Button>
+            <TooltipTrigger
+              onClick={() => archiveMutation.mutate({ unarchive: false })}
+              className={cn(
+                'h-8 w-8 text-destructive/80 hover:bg-destructive/10 hover:text-destructive',
+                buttonVariants({
+                  variant: 'ghost',
+                  size: 'icon',
+                }),
+              )}
+              disabled={archiveMutation.isPending}
+            >
+              <Archive className="h-4 w-4" />
             </TooltipTrigger>
-            <TooltipContent>העבר לארכיון</TooltipContent>
+            <TooltipContent>העברה לארכיון</TooltipContent>
           </Tooltip>
         )}
       </TableCell>
@@ -521,27 +522,31 @@ function LongTextEditor({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
-        {iconOnly ? (
-          <Button variant="ghost" size="icon" className="h-6 w-6">
-            <Maximize2 className="h-3 w-3" />
-          </Button>
-        ) : (
-          <Button
-            variant="outline"
-            size="sm"
-            className={cn(
-              'h-8 w-full justify-between px-2 text-xs',
-              !hasContent &&
-                value.length === 0 &&
-                'border-dashed text-muted-foreground',
-            )}
-          >
-            {hasContent || value.length > 0 ? 'יש תוכן' : 'ריק'}
-            <Maximize2 className="ms-2 h-3 w-3 opacity-50" />
-          </Button>
-        )}
-      </DialogTrigger>
+      {iconOnly ? (
+        <DialogTrigger
+          className={cn(
+            'h-6 w-6',
+            buttonVariants({ variant: 'ghost', size: 'icon' }),
+          )}
+        >
+          <Maximize2 className="h-3 w-3" />
+        </DialogTrigger>
+      ) : (
+        <DialogTrigger
+          className={cn(
+            'aaaaaaa h-8 w-full justify-between px-2 text-xs',
+            {
+              'border-dashed text-muted-foreground':
+                !hasContent && value.length === 0,
+            },
+            buttonVariants({ variant: 'outline', size: 'sm' }),
+          )}
+        >
+          {hasContent || value.length > 0 ? 'יש תוכן' : 'ריק'}
+          <Maximize2 className="ms-2 h-3 w-3 opacity-50" />
+        </DialogTrigger>
+      )}
+      {/*</DialogTrigger>*/}
       <DialogContent className="sm:max-w-125" dir="rtl">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -558,7 +563,7 @@ function LongTextEditor({
           <Button variant="outline" onClick={() => setOpen(false)}>
             ביטול
           </Button>
-          <Button onClick={handleSave}>שמור</Button>
+          <Button onClick={handleSave}>שמירה</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

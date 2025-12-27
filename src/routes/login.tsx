@@ -42,7 +42,7 @@ function SignInPage() {
 
   const pageName = pageType === 'login' ? 'התחברות' : 'הרשמה'
   const linkToOtherPageText = pageType === 'login' ? 'להרשמה' : 'להתחברות'
-  const ctaText = pageType === 'login' ? 'התחבר' : 'הירשם'
+  const ctaText = pageType === 'login' ? 'כניסה' : 'הרשמה'
 
   const signinValidator = z.object({
     email: z.email(),
@@ -146,7 +146,7 @@ function SignInPage() {
 
   return (
     <div
-      className="flex min-h-screen items-center justify-center bg-gray-100 p-4 dark:bg-gray-900"
+      className="flex flex-auto items-center justify-center bg-background p-4"
       dir="rtl"
     >
       <Card className="w-full max-w-md">
@@ -211,7 +211,7 @@ function SignInPage() {
                   }}
                   checked={rememberMe}
                 />
-                <FieldLabel htmlFor="remember">זכור אותי</FieldLabel>
+                <FieldLabel htmlFor="remember">שמירת פרטים</FieldLabel>
               </Field>
             )}
 

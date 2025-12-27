@@ -13,7 +13,9 @@ function DialogTrigger({ ...props }: DialogPrimitive.Trigger.Props) {
 }
 
 function DialogPortal({ ...props }: DialogPrimitive.Portal.Props) {
-  return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />
+  return (
+    <DialogPrimitive.Portal data-slot="dialog-portal" dir="rtl" {...props} />
+  )
 }
 
 function DialogClose({ ...props }: DialogPrimitive.Close.Props) {
@@ -40,9 +42,11 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  closeButtonDirection = 'left',
   ...props
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean
+  closeButtonDirection?: 'left' | 'right'
 }) {
   return (
     <DialogPortal>
@@ -62,7 +66,10 @@ function DialogContent({
             render={
               <Button
                 variant="ghost"
-                className="absolute top-2 right-2"
+                className={cn('absolute top-2', {
+                  'left-2': closeButtonDirection === 'left',
+                  'right-2': closeButtonDirection === 'right',
+                })}
                 size="icon-sm"
               />
             }
