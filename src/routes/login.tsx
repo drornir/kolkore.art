@@ -170,11 +170,11 @@ function SignInPage() {
                 value={email}
                 className={cn({
                   'text-left': true,
-                  'border-destructive': emailErrorMessage !== null,
+                  'border-destructive': emailErrorMessage !== '',
                 })}
                 dir="ltr"
               />
-              <FieldDescription className="text-destructive h-4">
+              <FieldDescription className="h-4 text-destructive">
                 {emailErrorMessage}
               </FieldDescription>
             </Field>
@@ -197,7 +197,7 @@ function SignInPage() {
                 })}
                 dir="ltr"
               />
-              <FieldDescription className="text-destructive h-4">
+              <FieldDescription className="h-4 text-destructive">
                 {passwordErrorMessage}
               </FieldDescription>
             </Field>
@@ -236,7 +236,7 @@ function SignInPage() {
                   }}
                   dir="ltr"
                 />
-                <FieldDescription className="text-destructive h-4">
+                <FieldDescription className="h-4 text-destructive">
                   {password2ErrorMessage}
                 </FieldDescription>
               </Field>
