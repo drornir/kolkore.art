@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { type DateRange, DateRangePicker } from '@/components/DatePicker'
+import { SeeMore } from '@/components/see-more'
 import {
   Accordion,
   AccordionContent,
@@ -71,8 +72,8 @@ export function OpenCallsPage() {
     queryFn: () => getFilters(),
     staleTime: Infinity,
   })
-
   const [draftFilters, setDraftFilters] = useState<CallsFilters>(search.filters)
+  // const [seeMoreState, setSeeMoreState] = useState<Record<number, boolean>>({}) // by call id
 
   useEffect(() => {
     setDraftFilters(search.filters)
@@ -345,8 +346,8 @@ export function OpenCallsPage() {
                   <Badge variant="secondary">{item.type}</Badge>
                 </div>
                 {item.description && (
-                  <CardDescription className="mt-2 line-clamp-2 text-base text-muted-foreground">
-                    {item.description}
+                  <CardDescription className="mt-2 whitespace-break-spaces text-base text-muted-foreground">
+                    <SeeMore text={item.description} />
                   </CardDescription>
                 )}
               </CardHeader>
