@@ -73,7 +73,6 @@ export function OpenCallsPage() {
     staleTime: Infinity,
   })
   const [draftFilters, setDraftFilters] = useState<CallsFilters>(search.filters)
-  // const [seeMoreState, setSeeMoreState] = useState<Record<number, boolean>>({}) // by call id
 
   useEffect(() => {
     setDraftFilters(search.filters)

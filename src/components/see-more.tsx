@@ -16,7 +16,7 @@ export const SeeMore = ({
   lines = 5,
 }: {
   text: string
-  lines?: number
+  lines?: 1 | 2 | 3 | 4 | 5 | 6
   className?: string
 } & ButtonVariantProps) => {
   const [isOpen, setIsOpen] = useState(false)
